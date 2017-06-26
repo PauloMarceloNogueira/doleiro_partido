@@ -1,0 +1,79 @@
+service: serverless-doleiro-partido
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  create:
+    handler: api/create.create
+    events:
+      - http:
+          path: partido
+          method: post
+          cors: true
+
+  list:
+    handler: api/list.list
+    events:
+      - http:
+          path: partido
+          method: get
+          cors: true
+
+  get:
+    handler: api/get.get
+    events:
+      - http:
+          path: partido/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: api/update.update
+    events:
+      - http:
+          path: partido/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: api/delete.delete
+    events:
+      - http:
+          path: partido/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

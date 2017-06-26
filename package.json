@@ -1,0 +1,10 @@
+{
+  "name": "doleiro-partidos-serverless",
+  "version": "1.0.0",
+  "description": "Serverless CRUD de Partidos Políticos",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^2.0.3"
+  }
+}
